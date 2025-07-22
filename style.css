@@ -157,6 +157,8 @@ body {
     border: 2px solid transparent;
     border-radius: 10px;
     transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent; /* iOS タップハイライトを無効化 */
+    touch-action: manipulation; /* タッチ操作を最適化 */
 }
 
 .cat-option:hover {
@@ -288,6 +290,8 @@ body {
     cursor: pointer;
     box-shadow: 0 5px #555;
     margin-top: 15px;
+    -webkit-tap-highlight-color: transparent; /* iOS タップハイライトを無効化 */
+    touch-action: manipulation; /* タッチ操作を最適化 */
 }
 
 #start-btn, #restart-btn-clear, #restart-btn-gameover {
@@ -334,6 +338,8 @@ body {
     cursor: pointer;
     margin-right: 10px;
     box-shadow: 0 4px #555;
+    -webkit-tap-highlight-color: transparent; /* iOS タップハイライトを無効化 */
+    touch-action: manipulation; /* タッチ操作を最適化 */
 }
 
 #jump-btn {
@@ -346,6 +352,8 @@ body {
     border-radius: 50px;
     cursor: pointer;
     box-shadow: 0 5px #d147a3;
+    -webkit-tap-highlight-color: transparent; /* iOS タップハイライトを無効化 */
+    touch-action: manipulation; /* タッチ操作を最適化 */
 }
 
 #pause-btn {

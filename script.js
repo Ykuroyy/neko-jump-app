@@ -36,18 +36,44 @@ let gameLoopInterval;
 document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); handleJump(); } });
 gameContainer.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(); });
 startBtn.addEventListener('click', startGame);
+startBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // デフォルトのタッチ動作を防ぐ
+    console.log('Start button touched'); // デバッグ用
+    startGame();
+});
 pauseBtn.addEventListener('click', togglePause);
+pauseBtn.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
+
 restartBtn.addEventListener('click', () => resetGame(true));
+restartBtn.addEventListener('touchstart', (e) => { e.preventDefault(); resetGame(true); });
+
 restartBtnClear.addEventListener('click', () => resetGame(true));
+restartBtnClear.addEventListener('touchstart', (e) => { e.preventDefault(); resetGame(true); });
+
 jumpBtn.addEventListener('click', (e) => { e.stopPropagation(); handleJump(); });
+jumpBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); handleJump(); });
 
 restartBtnGameover.addEventListener('click', () => startGame());
+restartBtnGameover.addEventListener('touchstart', (e) => { e.preventDefault(); startGame(); });
+
 backToTopBtn.addEventListener('click', () => resetGame(true));
+backToTopBtn.addEventListener('touchstart', (e) => { e.preventDefault(); resetGame(true); });
 
 // Cat selection event listener
 catOptions.forEach(option => {
+    // クリックイベント
     option.addEventListener('click', () => {
         console.log('Cat option clicked:', option.dataset.catType); // デバッグ用
+        catOptions.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+        selectedCatType = option.dataset.catType;
+        applyCatType();
+    });
+    
+    // タッチイベント（スマホ対応）
+    option.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // デフォルトのタッチ動作を防ぐ
+        console.log('Cat option touched:', option.dataset.catType); // デバッグ用
         catOptions.forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
         selectedCatType = option.dataset.catType;
