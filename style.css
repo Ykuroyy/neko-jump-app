@@ -169,6 +169,7 @@ body {
 }
 
 .cat-preview {
+    position: relative;
     width: 40px;
     height: 35px;
     border: 1px solid #ccc;
@@ -188,6 +189,42 @@ body {
 }
 .cat-preview::before { left: -1px; transform: rotate(-35deg); }
 .cat-preview::after { right: -1px; transform: rotate(35deg); }
+
+/* 猫のプレビューの柄を適用 */
+.cat-preview.calico {
+    background: 
+        radial-gradient(circle at 8px 8px, #E89F65 15%, transparent 16%), 
+        radial-gradient(circle at 28px 24px, #555 12%, transparent 13%),   
+        #FDFBF5; 
+}
+
+.cat-preview.black {
+    background-color: #333;
+}
+
+.cat-preview.tabby-orange {
+    background: repeating-linear-gradient(
+        45deg,
+        #E89F65,
+        #E89F65 4px,
+        #FFA500 4px,
+        #FFA500 8px
+    );
+}
+
+.cat-preview.white {
+    background-color: #FDFBF5;
+}
+
+.cat-preview.tabby-grey {
+    background: repeating-linear-gradient(
+        45deg,
+        #A9A9A9,
+        #A9A9A9 4px,
+        #808080 4px,
+        #808080 8px
+    );
+}
 
 .cat-option span {
     font-size: 14px;

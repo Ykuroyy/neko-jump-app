@@ -47,6 +47,7 @@ backToTopBtn.addEventListener('click', () => resetGame(true));
 // Cat selection event listener
 catOptions.forEach(option => {
     option.addEventListener('click', () => {
+        console.log('Cat option clicked:', option.dataset.catType); // デバッグ用
         catOptions.forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
         selectedCatType = option.dataset.catType;
@@ -129,6 +130,7 @@ function gameOver() {
 
 // --- Cat Type Application ---
 function applyCatType() {
+    console.log('Applying cat type:', selectedCatType); // デバッグ用
     cat.className = ''; // Remove existing classes
     cat.classList.add('cat-type-' + selectedCatType);
 }
