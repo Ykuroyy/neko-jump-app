@@ -1,0 +1,16 @@
+{
+  "name": "neko-jump-app",
+  "version": "1.0.0",
+  "description": "A simple cat jumping game",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -s . -l $PORT",
+    "dev": "npx serve -s . -l 8000"
+  },
+  "keywords": ["game", "html5", "cat"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+} 
