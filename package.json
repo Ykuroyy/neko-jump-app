@@ -4,7 +4,7 @@
   "description": "A simple cat jumping game",
   "main": "server.js",
   "scripts": {
-    "start": "npx serve -s . -l $PORT --single",
+    "start": "node server.js",
     "dev": "npx serve -s . -l 8000"
   },
   "keywords": ["game", "html5", "cat"],
