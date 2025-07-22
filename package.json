@@ -2,18 +2,7 @@
   "name": "neko-jump-app",
   "version": "1.0.0",
   "description": "A simple cat jumping game",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "npx serve -s . -l 8000",
-    "build": "echo 'No build step required'",
-    "postinstall": "echo 'Installation completed'"
-  },
   "keywords": ["game", "html5", "cat"],
   "author": "",
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
-    "serve": "^14.2.1"
-  }
+  "license": "MIT"
 } 
