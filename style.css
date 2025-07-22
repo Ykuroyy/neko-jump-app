@@ -1,0 +1,328 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #87CEEB; /* Sky Blue */
+    margin: 0;
+    overflow: hidden;
+    font-family: 'M PLUS Rounded 1c', sans-serif, system-ui;
+}
+
+#app-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#game-container {
+    position: relative;
+    width: 400px; /* 固定幅に戻す */
+    height: 600px; /* 固定高さに戻す */
+    border: 2px solid #333;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+#score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    color: #333;
+    z-index: 10;
+}
+
+#goal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #333;
+    z-index: 10;
+}
+
+#cat {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    width: 50px;
+    height: 45px;
+    border: 2px solid #444;
+    border-radius: 40% 40% 20% 20%;
+    z-index: 5;
+}
+
+/* 耳 */
+#cat::before, #cat::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 20px solid #444; /* 濃いグレー */
+    top: -12px;
+}
+#cat::before {
+    left: -2px;
+    transform: rotate(-35deg);
+}
+#cat::after {
+    right: -2px;
+    transform: rotate(35deg);
+}
+
+/* しっぽ */
+#cat .tail {
+    position: absolute;
+    width: 10px;
+    height: 40px;
+    background-color: #E89F65; /* オレンジ色 */
+    border: 2px solid #444;
+    border-radius: 5px 5px 10px 10px;
+    /* 猫の体の後ろに配置 */
+    left: -18px;
+    bottom: 5px;
+    transform: rotate(40deg);
+    z-index: -1; /* 体の後ろに隠れるように */
+}
+
+/* --- Cat Types --- */
+.cat-type-calico {
+    background: 
+        radial-gradient(circle at 10px 10px, #E89F65 20%, transparent 21%), 
+        radial-gradient(circle at 35px 30px, #555 15%, transparent 16%),   
+        #FDFBF5; 
+}
+.cat-type-calico .tail {
+    background-color: #E89F65;
+}
+
+.cat-type-black {
+    background-color: #333;
+}
+.cat-type-black .tail {
+    background-color: #333;
+}
+
+.cat-type-tabby-orange {
+    background: repeating-linear-gradient(
+        45deg,
+        #E89F65,
+        #E89F65 5px,
+        #FFA500 5px,
+        #FFA500 10px
+    );
+}
+.cat-type-tabby-orange .tail {
+    background-color: #E89F65;
+}
+
+.cat-type-white {
+    background-color: #FDFBF5;
+}
+.cat-type-white .tail {
+    background-color: #FDFBF5;
+}
+
+.cat-type-tabby-grey {
+    background: repeating-linear-gradient(
+        45deg,
+        #A9A9A9,
+        #A9A9A9 5px,
+        #808080 5px,
+        #808080 10px
+    );
+}
+.cat-type-tabby-grey .tail {
+    background-color: #A9A9A9;
+}
+
+/* --- Cat Selection UI --- */
+#cat-selection {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.cat-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.cat-option:hover {
+    background-color: #f0f0f0;
+}
+
+.cat-option.selected {
+    border-color: #1E90FF;
+    background-color: #e0f2f7;
+}
+
+.cat-preview {
+    width: 40px;
+    height: 35px;
+    border: 1px solid #ccc;
+    border-radius: 40% 40% 20% 20%;
+    margin-bottom: 5px;
+}
+
+.cat-preview::before, .cat-preview::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 15px solid #ccc; /* プレビューの耳の色 */
+    top: -8px;
+}
+.cat-preview::before { left: -1px; transform: rotate(-35deg); }
+.cat-preview::after { right: -1px; transform: rotate(35deg); }
+
+.cat-option span {
+    font-size: 14px;
+    color: #333;
+}
+
+.obstacle {
+    position: absolute;
+    left: 400px;
+    width: 60px;
+    background-color: #7CFC00;
+    border: 2px solid #333;
+    box-sizing: border-box;
+    /* topとbottomはJSで設定するので、ここでは一旦リセット */
+    top: auto;
+    bottom: auto;
+}
+
+/* --- Screens & Controls --- */
+#start-screen, #clear-screen, #gameover-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 20;
+}
+
+#clear-screen, #gameover-screen {
+    display: none; /* 最初は非表示 */
+}
+
+#start-screen h1, #clear-screen h1, #gameover-screen h1 {
+    font-size: 48px; /* 少し大きく */
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#gameover-screen h1 {
+    color: #DC143C; /* Crimson Red */
+}
+
+#start-screen p, #clear-screen p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+#start-btn, #restart-btn-clear, #restart-btn-gameover, #back-to-top-btn {
+    padding: 15px 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 5px #555;
+    margin-top: 15px;
+}
+
+#start-btn, #restart-btn-clear, #restart-btn-gameover {
+    background-color: #1E90FF; /* DodgerBlue */
+    box-shadow: 0 5px #1C86EE;
+}
+
+#back-to-top-btn {
+    background-color: #6c757d; /* Gray */
+    box-shadow: 0 5px #5a6268;
+}
+
+/* キラキラアニメーション */
+@keyframes sparkle {
+    0%, 100% { text-shadow: 0 0 8px #FFD700, 0 0 10px #FFD700; color: #FFA500; }
+    50% { text-shadow: 0 0 20px #FFF, 0 0 25px #FFF; color: #FFD700; }
+}
+
+.sparkle {
+    animation: sparkle 1.5s infinite;
+}
+
+#game-controls {
+    width: 400px; /* ゲームコンテナの幅に合わせる */
+    padding: 15px 0; /* 上下のパディング */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    display: none; /* Initially hidden */
+}
+
+.control-group-left {
+    display: flex;
+}
+
+#pause-btn, #restart-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-right: 10px;
+    box-shadow: 0 4px #555;
+}
+
+#jump-btn {
+    padding: 15px 30px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #FF69B4; /* ホットピンク */
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 5px #d147a3;
+}
+
+#pause-btn {
+    background-color: #FFC107; /* Amber */
+    box-shadow: 0 4px #DAA520; /* GoldenRod */
+}
+
+#restart-btn {
+    background-color: #F44336; /* Red */
+    box-shadow: 0 4px #D32F2F;
+}
+
+/* Button active state */
+#start-btn:active, #pause-btn:active, #restart-btn:active, #jump-btn:active, #restart-btn-clear:active, #restart-btn-gameover:active, #back-to-top-btn:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}

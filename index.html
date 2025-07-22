@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ジャンプ！ねこちゃん</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-wrapper">
+        <div id="game-container">
+            <div id="score">Score: 0</div>
+            <div id="goal">目標: 20</div>
+            <div id="cat"><span class="tail"></span></div>
+            <div id="obstacle" class="obstacle"></div>
+
+            <div id="start-screen">
+                <h1>ジャンプ！ねこちゃん</h1>
+                <p>スペースキー or タップでジャンプして<br>障害物をよけよう！</p>
+                <div id="cat-selection">
+                    <div class="cat-option selected" data-cat-type="calico">
+                        <div class="cat-preview calico cat-type-calico"></div>
+                        <span>三毛猫</span>
+                    </div>
+                    <div class="cat-option" data-cat-type="black">
+                        <div class="cat-preview black cat-type-black"></div>
+                        <span>黒猫</span>
+                    </div>
+                    <div class="cat-option" data-cat-type="tabby-orange">
+                        <div class="cat-preview tabby-orange cat-type-tabby-orange"></div>
+                        <span>茶トラ</span>
+                    </div>
+                    <div class="cat-option" data-cat-type="white">
+                        <div class="cat-preview white cat-type-white"></div>
+                        <span>白猫</span>
+                    </div>
+                    <div class="cat-option" data-cat-type="tabby-grey">
+                        <div class="cat-preview tabby-grey cat-type-tabby-grey"></div>
+                        <span>サバトラ</span>
+                    </div>
+                </div>
+                <button id="start-btn">スタート</button>
+            </div>
+
+            <div id="clear-screen">
+                <h1 class="sparkle">✨クリア！✨</h1>
+                <p>おめでとう！</p>
+                <button id="restart-btn-clear">もう一度遊ぶ</button>
+            </div>
+
+            <div id="gameover-screen">
+                <h1>残念〜〜</h1>
+                <button id="restart-btn-gameover">もう一度挑戦</button>
+                <button id="back-to-top-btn">トップページに戻る</button>
+            </div>
+        </div>
+
+        <div id="game-controls">
+            <div class="control-group-left">
+                <button id="pause-btn">一時停止</button>
+                <button id="restart-btn">やり直し</button>
+            </div>
+            <button id="jump-btn">ジャンプ</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
