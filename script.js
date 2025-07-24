@@ -2,6 +2,7 @@ const cat = document.getElementById('cat');
 const obstacle = document.getElementById('obstacle');
 const scoreDisplay = document.getElementById('score');
 const levelDisplay = document.getElementById('level-display');
+const crownStatusDisplay = document.getElementById('crown-status');
 const gameContainer = document.getElementById('game-container');
 const startScreen = document.getElementById('start-screen');
 const clearScreen = document.getElementById('clear-screen');
@@ -284,6 +285,9 @@ function updateCrownDisplay() {
         crown.textContent = '👑';
         cat.appendChild(crown);
     }
+    
+    // Update crown status display
+    crownStatusDisplay.textContent = `👑 × ${clearedLevels.length}`;
 }
 
 // --- Main Game Loop ---
