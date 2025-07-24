@@ -1,6 +1,7 @@
 const cat = document.getElementById('cat');
 const obstacle = document.getElementById('obstacle');
 const scoreDisplay = document.getElementById('score');
+const levelDisplay = document.getElementById('level-display');
 const gameContainer = document.getElementById('game-container');
 const startScreen = document.getElementById('start-screen');
 const clearScreen = document.getElementById('clear-screen');
@@ -25,12 +26,23 @@ let selectedCatType = 'calico'; // Default selected cat
 let gameState = 'waiting';
 let catY, catVelocity, obstacleX, score, obstacleSpeed;
 let obstacleHeight, obstacleY, obstacleType;
+let currentLevel = 1;
+let clearedLevels = [];
 
 const gravity = -0.5;
 const jumpStrength = 12;
 const initialObstacleSpeed = 4;
 const CLEAR_SCORE = 20;
 let gameLoopInterval;
+
+// Level difficulty settings
+const levelSettings = {
+    1: { speed: 4, speedIncrease: 0.1, obstacleMinHeight: 150, obstacleMaxHeight: 150 },
+    2: { speed: 5, speedIncrease: 0.15, obstacleMinHeight: 140, obstacleMaxHeight: 180 },
+    3: { speed: 6, speedIncrease: 0.2, obstacleMinHeight: 130, obstacleMaxHeight: 200 },
+    4: { speed: 7, speedIncrease: 0.25, obstacleMinHeight: 120, obstacleMaxHeight: 220 },
+    5: { speed: 8, speedIncrease: 0.3, obstacleMinHeight: 100, obstacleMaxHeight: 250 }
+};
 
 // --- Event Listeners ---
 document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); handleJump(); } });
@@ -44,20 +56,54 @@ startBtn.addEventListener('touchstart', (e) => {
 pauseBtn.addEventListener('click', togglePause);
 pauseBtn.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
 
-restartBtn.addEventListener('click', () => resetGame(true));
-restartBtn.addEventListener('touchstart', (e) => { e.preventDefault(); resetGame(true); });
+restartBtn.addEventListener('click', () => {
+    init();
+    startGame();
+});
+restartBtn.addEventListener('touchstart', (e) => { 
+    e.preventDefault(); 
+    init();
+    startGame();
+});
 
-restartBtnClear.addEventListener('click', () => resetGame(true));
-restartBtnClear.addEventListener('touchstart', (e) => { e.preventDefault(); resetGame(true); });
+restartBtnClear.addEventListener('click', () => {
+    if (currentLevel < 5) {
+        currentLevel++;
+    }
+    resetGame(true);
+});
+restartBtnClear.addEventListener('touchstart', (e) => { 
+    e.preventDefault(); 
+    if (currentLevel < 5) {
+        currentLevel++;
+    }
+    resetGame(true); 
+});
 
 jumpBtn.addEventListener('click', (e) => { e.stopPropagation(); handleJump(); });
 jumpBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); handleJump(); });
 
-restartBtnGameover.addEventListener('click', () => startGame());
-restartBtnGameover.addEventListener('touchstart', (e) => { e.preventDefault(); startGame(); });
+restartBtnGameover.addEventListener('click', () => {
+    init();
+    startGame();
+});
+restartBtnGameover.addEventListener('touchstart', (e) => { 
+    e.preventDefault(); 
+    init();
+    startGame();
+});
 
-backToTopBtn.addEventListener('click', () => resetGame(true));
-backToTopBtn.addEventListener('touchstart', (e) => { e.preventDefault(); resetGame(true); });
+backToTopBtn.addEventListener('click', () => {
+    currentLevel = 1;
+    clearedLevels = [];
+    resetGame(true);
+});
+backToTopBtn.addEventListener('touchstart', (e) => { 
+    e.preventDefault(); 
+    currentLevel = 1;
+    clearedLevels = [];
+    resetGame(true); 
+});
 
 // Cat selection event listener
 catOptions.forEach(option => {
@@ -88,11 +134,13 @@ function init() {
     catVelocity = 0;
     obstacleX = 400;
     score = 0;
-    obstacleSpeed = initialObstacleSpeed;
+    const settings = levelSettings[currentLevel];
+    obstacleSpeed = settings.speed;
 
     cat.style.bottom = catY + 'px';
     obstacle.style.left = obstacleX + 'px';
     scoreDisplay.textContent = `Score: 0 / ${CLEAR_SCORE}`;
+    levelDisplay.textContent = `レベル: ${currentLevel}`;
 
     startScreen.style.display = 'flex';
     clearScreen.style.display = 'none';
@@ -100,6 +148,7 @@ function init() {
     gameControls.style.display = 'none';
 
     applyCatType(); // Apply selected cat type on init
+    updateCrownDisplay();
     setNewObstacle();
 }
 
@@ -110,6 +159,7 @@ function startGame() {
     startScreen.style.display = 'none';
     gameoverScreen.style.display = 'none';
     gameControls.style.display = 'flex';
+    updateCrownDisplay();
     if (gameLoopInterval) clearInterval(gameLoopInterval);
     gameLoopInterval = setInterval(gameLoop, 20);
 }
@@ -143,6 +193,24 @@ function handleJump() {
 function gameClear() {
     gameState = 'gameover';
     clearInterval(gameLoopInterval);
+    
+    // Add current level to cleared levels if not already there
+    if (!clearedLevels.includes(currentLevel)) {
+        clearedLevels.push(currentLevel);
+    }
+    
+    // Update clear screen message based on current level
+    const clearTitle = clearScreen.querySelector('h1');
+    const clearMessage = clearScreen.querySelector('p');
+    
+    if (currentLevel < 5) {
+        clearTitle.innerHTML = `✨レベル${currentLevel}クリア！✨`;
+        clearMessage.textContent = `レベル${currentLevel + 1}に挑戦しよう！`;
+    } else {
+        clearTitle.innerHTML = '🎉全レベルクリア！🎉';
+        clearMessage.textContent = 'すごい！全てのレベルをクリアしました！';
+    }
+    
     clearScreen.style.display = 'flex';
     gameControls.style.display = 'none';
 }
@@ -159,6 +227,23 @@ function applyCatType() {
     console.log('Applying cat type:', selectedCatType); // デバッグ用
     cat.className = ''; // Remove existing classes
     cat.classList.add('cat-type-' + selectedCatType);
+}
+
+// --- Crown Display ---
+function updateCrownDisplay() {
+    // Remove existing crown if any
+    const existingCrown = cat.querySelector('.crown');
+    if (existingCrown) {
+        existingCrown.remove();
+    }
+    
+    // Add crown if current level has been cleared
+    if (clearedLevels.includes(currentLevel)) {
+        const crown = document.createElement('div');
+        crown.className = 'crown';
+        crown.textContent = '👑';
+        cat.appendChild(crown);
+    }
 }
 
 // --- Main Game Loop ---
@@ -180,7 +265,8 @@ function gameLoop() {
         obstacleX = 400;
         score++;
         scoreDisplay.textContent = `Score: ${score} / ${CLEAR_SCORE}`;
-        obstacleSpeed += 0.1;
+        const settings = levelSettings[currentLevel];
+        obstacleSpeed += settings.speedIncrease;
         setNewObstacle();
         if (score >= CLEAR_SCORE) {
             gameClear();
@@ -199,7 +285,8 @@ function gameLoop() {
 
 function setNewObstacle() {
     obstacleType = Math.floor(Math.random() * 3);
-    obstacleHeight = Math.random() * 150 + 150;
+    const settings = levelSettings[currentLevel];
+    obstacleHeight = Math.random() * (settings.obstacleMaxHeight - settings.obstacleMinHeight) + settings.obstacleMinHeight;
     obstacle.style.height = obstacleHeight + 'px';
 
     obstacle.style.top = 'auto';

@@ -33,6 +33,16 @@ body {
     z-index: 10;
 }
 
+#level-display {
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    font-size: 20px;
+    color: #333;
+    z-index: 10;
+    font-weight: bold;
+}
+
 #goal {
     position: absolute;
     top: 10px;
@@ -43,6 +53,7 @@ body {
 }
 
 #cat {
+    position: relative;
     position: absolute;
     bottom: 50px;
     left: 50px;
@@ -354,6 +365,22 @@ body {
     box-shadow: 0 5px #d147a3;
     -webkit-tap-highlight-color: transparent; /* iOS タップハイライトを無効化 */
     touch-action: manipulation; /* タッチ操作を最適化 */
+}
+
+/* Crown for cleared levels */
+.crown {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    z-index: 10;
+    animation: crown-bounce 2s infinite;
+}
+
+@keyframes crown-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-3px); }
 }
 
 #pause-btn {
