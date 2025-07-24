@@ -335,7 +335,7 @@ body {
     margin-top: 15px;
 }
 
-#start-btn, #restart-btn-clear, #restart-btn-gameover, #back-to-top-btn {
+#start-btn, #next-level-btn, #retry-level-btn, #back-to-top-clear-btn, #restart-btn-gameover, #back-to-top-btn {
     padding: 12px 25px;
     font-size: 18px;
     font-weight: bold;
@@ -349,12 +349,17 @@ body {
     touch-action: manipulation; /* タッチ操作を最適化 */
 }
 
-#start-btn, #restart-btn-clear, #restart-btn-gameover {
+#start-btn, #next-level-btn, #restart-btn-gameover {
     background-color: #1E90FF; /* DodgerBlue */
     box-shadow: 0 5px #1C86EE;
 }
 
-#back-to-top-btn {
+#retry-level-btn {
+    background-color: #32CD32; /* LimeGreen */
+    box-shadow: 0 5px #228B22;
+}
+
+#back-to-top-btn, #back-to-top-clear-btn {
     background-color: #6c757d; /* Gray */
     box-shadow: 0 5px #5a6268;
 }
@@ -438,7 +443,7 @@ body {
 }
 
 /* Button active state */
-#start-btn:active, #pause-btn:active, #restart-btn:active, #jump-btn:active, #restart-btn-clear:active, #restart-btn-gameover:active, #back-to-top-btn:active {
+#start-btn:active, #pause-btn:active, #restart-btn:active, #jump-btn:active, #next-level-btn:active, #retry-level-btn:active, #back-to-top-clear-btn:active, #restart-btn-gameover:active, #back-to-top-btn:active {
     transform: translateY(4px);
     box-shadow: none;
 }

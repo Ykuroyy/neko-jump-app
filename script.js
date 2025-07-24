@@ -13,7 +13,9 @@ const startBtn = document.getElementById('start-btn');
 const pauseBtn = document.getElementById('pause-btn');
 const restartBtn = document.getElementById('restart-btn');
 const jumpBtn = document.getElementById('jump-btn');
-const restartBtnClear = document.getElementById('restart-btn-clear');
+const nextLevelBtn = document.getElementById('next-level-btn');
+const retryLevelBtn = document.getElementById('retry-level-btn');
+const backToTopClearBtn = document.getElementById('back-to-top-clear-btn');
 const restartBtnGameover = document.getElementById('restart-btn-gameover');
 const backToTopBtn = document.getElementById('back-to-top-btn');
 
@@ -66,18 +68,38 @@ restartBtn.addEventListener('touchstart', (e) => {
     startGame();
 });
 
-restartBtnClear.addEventListener('click', () => {
+nextLevelBtn.addEventListener('click', () => {
     if (currentLevel < 5) {
         currentLevel++;
+        init();
+        startGame();
     }
-    resetGame(true);
 });
-restartBtnClear.addEventListener('touchstart', (e) => { 
+nextLevelBtn.addEventListener('touchstart', (e) => { 
     e.preventDefault(); 
     if (currentLevel < 5) {
         currentLevel++;
+        init();
+        startGame();
     }
-    resetGame(true); 
+});
+
+retryLevelBtn.addEventListener('click', () => {
+    init();
+    startGame();
+});
+retryLevelBtn.addEventListener('touchstart', (e) => { 
+    e.preventDefault(); 
+    init();
+    startGame();
+});
+
+backToTopClearBtn.addEventListener('click', () => {
+    resetGame(true);
+});
+backToTopClearBtn.addEventListener('touchstart', (e) => { 
+    e.preventDefault(); 
+    resetGame(true);
 });
 
 jumpBtn.addEventListener('click', (e) => { e.stopPropagation(); handleJump(); });
@@ -216,13 +238,17 @@ function gameClear() {
     // Update clear screen message based on current level
     const clearTitle = clearScreen.querySelector('h1');
     const clearMessage = clearScreen.querySelector('p');
+    const nextLevelBtn = document.getElementById('next-level-btn');
     
     if (currentLevel < 5) {
         clearTitle.innerHTML = `✨レベル${currentLevel}クリア！✨`;
         clearMessage.textContent = `レベル${currentLevel + 1}に挑戦しよう！`;
+        nextLevelBtn.style.display = 'inline-block';
+        nextLevelBtn.textContent = `レベル${currentLevel + 1}へ進む`;
     } else {
         clearTitle.innerHTML = '🎉全レベルクリア！🎉';
         clearMessage.textContent = 'すごい！全てのレベルをクリアしました！';
+        nextLevelBtn.style.display = 'none';
     }
     
     clearScreen.style.display = 'flex';
