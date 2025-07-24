@@ -141,6 +141,20 @@ function init() {
     obstacle.style.left = obstacleX + 'px';
     scoreDisplay.textContent = `Score: 0 / ${CLEAR_SCORE}`;
     levelDisplay.textContent = `レベル: ${currentLevel}`;
+    
+    // Update start screen with current level info
+    const startScreen = document.getElementById('start-screen');
+    const levelInfo = clearedLevels.length > 0 ? 
+        `🏆 クリア済みレベル: ${clearedLevels.join(', ')}` : '';
+    const existingLevelInfo = startScreen.querySelector('.cleared-levels');
+    if (existingLevelInfo) {
+        existingLevelInfo.textContent = levelInfo;
+    } else if (levelInfo) {
+        const levelInfoElement = document.createElement('p');
+        levelInfoElement.className = 'cleared-levels';
+        levelInfoElement.textContent = levelInfo;
+        startScreen.querySelector('.game-info').appendChild(levelInfoElement);
+    }
 
     startScreen.style.display = 'flex';
     clearScreen.style.display = 'none';
