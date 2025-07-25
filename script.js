@@ -58,110 +58,115 @@ const levelSettings = {
 };
 
 // --- Event Listeners ---
-document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); handleJump(); } });
-gameContainer.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(); });
-startBtn.addEventListener('click', () => {
-    console.log('Start button clicked');
-    startGame();
-});
-startBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault(); // デフォルトのタッチ動作を防ぐ
-    console.log('Start button touched'); // デバッグ用
-    startGame();
-});
-pauseBtn.addEventListener('click', togglePause);
-pauseBtn.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
-
-restartBtn.addEventListener('click', () => {
-    init();
-    startGame();
-});
-restartBtn.addEventListener('touchstart', (e) => { 
-    e.preventDefault(); 
-    init();
-    startGame();
-});
-
-nextLevelBtn.addEventListener('click', () => {
-    if (currentLevel < 3) {
-        currentLevel++;
-        init();
-        startGame();
-    }
-});
-nextLevelBtn.addEventListener('touchstart', (e) => { 
-    e.preventDefault(); 
-    if (currentLevel < 3) {
-        currentLevel++;
-        init();
-        startGame();
-    }
-});
-
-retryLevelBtn.addEventListener('click', () => {
-    init();
-    startGame();
-});
-retryLevelBtn.addEventListener('touchstart', (e) => { 
-    e.preventDefault(); 
-    init();
-    startGame();
-});
-
-backToTopClearBtn.addEventListener('click', () => {
-    resetGame(true);
-});
-backToTopClearBtn.addEventListener('touchstart', (e) => { 
-    e.preventDefault(); 
-    resetGame(true);
-});
-
-jumpBtn.addEventListener('click', (e) => { e.stopPropagation(); handleJump(); });
-jumpBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); handleJump(); });
-
-restartBtnGameover.addEventListener('click', () => {
-    init();
-    startGame();
-});
-restartBtnGameover.addEventListener('touchstart', (e) => { 
-    e.preventDefault(); 
-    init();
-    startGame();
-});
-
-backToTopBtn.addEventListener('click', () => {
-    currentLevel = 1;
-    resetGame(true);
-});
-backToTopBtn.addEventListener('touchstart', (e) => { 
-    e.preventDefault(); 
-    currentLevel = 1;
-    resetGame(true); 
-});
-
-// Cat selection event listener
-catOptions.forEach(option => {
-    // クリックイベント
-    option.addEventListener('click', () => {
-        console.log('Cat option clicked:', option.dataset.catType); // デバッグ用
-        catOptions.forEach(opt => opt.classList.remove('selected'));
-        option.classList.add('selected');
-        selectedCatType = option.dataset.catType;
-        applyCatType();
-        updateCatSelectionCrowns();
-    });
+function setupEventListeners() {
+    console.log('Setting up event listeners');
     
-    // タッチイベント（スマホ対応）
-    option.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // デフォルトのタッチ動作を防ぐ
-        console.log('Cat option touched:', option.dataset.catType); // デバッグ用
-        catOptions.forEach(opt => opt.classList.remove('selected'));
-        option.classList.add('selected');
-        selectedCatType = option.dataset.catType;
-        applyCatType();
-        updateCatSelectionCrowns();
+    document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); handleJump(); } });
+    gameContainer.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(); });
+    
+    startBtn.addEventListener('click', () => {
+        console.log('Start button clicked');
+        startGame();
     });
-});
+    startBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // デフォルトのタッチ動作を防ぐ
+        console.log('Start button touched'); // デバッグ用
+        startGame();
+    });
+    pauseBtn.addEventListener('click', togglePause);
+    pauseBtn.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
+
+    restartBtn.addEventListener('click', () => {
+        init();
+        startGame();
+    });
+    restartBtn.addEventListener('touchstart', (e) => { 
+        e.preventDefault(); 
+        init();
+        startGame();
+    });
+
+    nextLevelBtn.addEventListener('click', () => {
+        if (currentLevel < 3) {
+            currentLevel++;
+            init();
+            startGame();
+        }
+    });
+    nextLevelBtn.addEventListener('touchstart', (e) => { 
+        e.preventDefault(); 
+        if (currentLevel < 3) {
+            currentLevel++;
+            init();
+            startGame();
+        }
+    });
+
+    retryLevelBtn.addEventListener('click', () => {
+        init();
+        startGame();
+    });
+    retryLevelBtn.addEventListener('touchstart', (e) => { 
+        e.preventDefault(); 
+        init();
+        startGame();
+    });
+
+    backToTopClearBtn.addEventListener('click', () => {
+        resetGame(true);
+    });
+    backToTopClearBtn.addEventListener('touchstart', (e) => { 
+        e.preventDefault(); 
+        resetGame(true);
+    });
+
+    jumpBtn.addEventListener('click', (e) => { e.stopPropagation(); handleJump(); });
+    jumpBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); handleJump(); });
+
+    restartBtnGameover.addEventListener('click', () => {
+        init();
+        startGame();
+    });
+    restartBtnGameover.addEventListener('touchstart', (e) => { 
+        e.preventDefault(); 
+        init();
+        startGame();
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+        currentLevel = 1;
+        resetGame(true);
+    });
+    backToTopBtn.addEventListener('touchstart', (e) => { 
+        e.preventDefault(); 
+        currentLevel = 1;
+        resetGame(true); 
+    });
+
+    // Cat selection event listener
+    catOptions.forEach(option => {
+        // クリックイベント
+        option.addEventListener('click', () => {
+            console.log('Cat option clicked:', option.dataset.catType); // デバッグ用
+            catOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            selectedCatType = option.dataset.catType;
+            applyCatType();
+            updateCatSelectionCrowns();
+        });
+        
+        // タッチイベント（スマホ対応）
+        option.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // デフォルトのタッチ動作を防ぐ
+            console.log('Cat option touched:', option.dataset.catType); // デバッグ用
+            catOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            selectedCatType = option.dataset.catType;
+            applyCatType();
+            updateCatSelectionCrowns();
+        });
+    });
+}
 
 // --- Game Flow ---
 function init() {
@@ -517,5 +522,10 @@ function checkObstacleCollision() {
     );
 }
 
-loadCrownData();
-init();
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing game');
+    setupEventListeners();
+    loadCrownData();
+    init();
+});
