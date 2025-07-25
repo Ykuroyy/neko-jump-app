@@ -31,7 +31,13 @@ let catY, catVelocity, obstacleX, score, obstacleSpeed;
 let obstacleHeight, obstacleY, obstacleType;
 let currentLevel = 1;
 let clearedLevels = [];
-let crownData = { bronze: [], silver: [], gold: [] };
+let crownData = {
+    calico: { bronze: [], silver: [], gold: [] },
+    black: { bronze: [], silver: [], gold: [] },
+    'tabby-orange': { bronze: [], silver: [], gold: [] },
+    white: { bronze: [], silver: [], gold: [] },
+    'tabby-grey': { bronze: [], silver: [], gold: [] }
+};
 
 const gravity = -0.5;
 const jumpStrength = 12;
@@ -43,9 +49,7 @@ let gameLoopInterval;
 const levelSettings = {
     1: { speed: 4, speedIncrease: 0.1, obstacleMinHeight: 150, obstacleMaxHeight: 150 },
     2: { speed: 5, speedIncrease: 0.15, obstacleMinHeight: 140, obstacleMaxHeight: 180 },
-    3: { speed: 6, speedIncrease: 0.2, obstacleMinHeight: 130, obstacleMaxHeight: 200 },
-    4: { speed: 7, speedIncrease: 0.25, obstacleMinHeight: 120, obstacleMaxHeight: 220 },
-    5: { speed: 8, speedIncrease: 0.3, obstacleMinHeight: 100, obstacleMaxHeight: 250 }
+    3: { speed: 6, speedIncrease: 0.2, obstacleMinHeight: 130, obstacleMaxHeight: 200 }
 };
 
 // --- Event Listeners ---
@@ -71,7 +75,7 @@ restartBtn.addEventListener('touchstart', (e) => {
 });
 
 nextLevelBtn.addEventListener('click', () => {
-    if (currentLevel < 5) {
+    if (currentLevel < 3) {
         currentLevel++;
         init();
         startGame();
@@ -79,7 +83,7 @@ nextLevelBtn.addEventListener('click', () => {
 });
 nextLevelBtn.addEventListener('touchstart', (e) => { 
     e.preventDefault(); 
-    if (currentLevel < 5) {
+    if (currentLevel < 3) {
         currentLevel++;
         init();
         startGame();
@@ -237,13 +241,14 @@ function gameClear() {
     if (!clearedLevels.includes(currentLevel)) {
         clearedLevels.push(currentLevel);
         
-        // Award crown based on level
-        if (currentLevel === 1 && !crownData.bronze.includes(1)) {
-            crownData.bronze.push(1);
-        } else if (currentLevel === 2 && !crownData.silver.includes(2)) {
-            crownData.silver.push(2);
-        } else if (currentLevel >= 3 && !crownData.gold.includes(currentLevel)) {
-            crownData.gold.push(currentLevel);
+        // Award crown based on level for current cat type
+        const catCrowns = crownData[selectedCatType];
+        if (currentLevel === 1 && !catCrowns.bronze.includes(1)) {
+            catCrowns.bronze.push(1);
+        } else if (currentLevel === 2 && !catCrowns.silver.includes(2)) {
+            catCrowns.silver.push(2);
+        } else if (currentLevel === 3 && !catCrowns.gold.includes(3)) {
+            catCrowns.gold.push(3);
         }
         
         saveCrownData();
@@ -254,7 +259,7 @@ function gameClear() {
     const clearMessage = clearScreen.querySelector('p');
     const nextLevelBtn = document.getElementById('next-level-btn');
     
-    if (currentLevel < 5) {
+    if (currentLevel < 3) {
         clearTitle.innerHTML = `✨レベル${currentLevel}クリア！✨`;
         clearMessage.textContent = `レベル${currentLevel + 1}に挑戦しよう！`;
         nextLevelBtn.style.display = 'inline-block';
@@ -292,8 +297,13 @@ function updateCrownDisplay() {
         existingCrown.remove();
     }
     
-    // Add crown if current level has been cleared
-    if (clearedLevels.includes(currentLevel)) {
+    // Add crown if current level has been cleared by current cat
+    const catCrowns = crownData[selectedCatType];
+    const hasCurrentLevelCrown = catCrowns.bronze.includes(currentLevel) || 
+                                 catCrowns.silver.includes(currentLevel) || 
+                                 catCrowns.gold.includes(currentLevel);
+    
+    if (hasCurrentLevelCrown) {
         const crown = document.createElement('div');
         crown.className = 'crown';
         
@@ -302,15 +312,15 @@ function updateCrownDisplay() {
             crown.textContent = '🥉'; // Bronze
         } else if (currentLevel === 2) {
             crown.textContent = '🥈'; // Silver
-        } else {
+        } else if (currentLevel === 3) {
             crown.textContent = '🥇'; // Gold
         }
         
         cat.appendChild(crown);
     }
     
-    // Update crown status display
-    const totalCrowns = crownData.bronze.length + crownData.silver.length + crownData.gold.length;
+    // Update crown status display for current cat
+    const totalCrowns = catCrowns.bronze.length + catCrowns.silver.length + catCrowns.gold.length;
     crownStatusDisplay.textContent = `👑 × ${totalCrowns}`;
 }
 
@@ -323,20 +333,26 @@ function loadCrownData() {
     const saved = localStorage.getItem('nekojump_crowns');
     if (saved) {
         crownData = JSON.parse(saved);
-        // Update clearedLevels based on crown data
-        clearedLevels = [...crownData.bronze, ...crownData.silver, ...crownData.gold];
+        // Update clearedLevels based on crown data for all cats
+        clearedLevels = [];
+        Object.values(crownData).forEach(catCrowns => {
+            clearedLevels.push(...catCrowns.bronze, ...catCrowns.silver, ...catCrowns.gold);
+        });
+        // Remove duplicates
+        clearedLevels = [...new Set(clearedLevels)];
     }
 }
 
-function getCrownForLevel(level) {
-    if (crownData.bronze.includes(level)) return '🥉';
-    if (crownData.silver.includes(level)) return '🥈';
-    if (crownData.gold.includes(level)) return '🥇';
+function getCrownForLevel(level, catType) {
+    const catCrowns = crownData[catType];
+    if (catCrowns.bronze.includes(level)) return '🥉';
+    if (catCrowns.silver.includes(level)) return '🥈';
+    if (catCrowns.gold.includes(level)) return '🥇';
     return null;
 }
 
-function addCrownToCat(catElement, level) {
-    const crown = getCrownForLevel(level);
+function addCrownToCat(catElement, level, catType) {
+    const crown = getCrownForLevel(level, catType);
     if (crown) {
         const crownElement = document.createElement('div');
         crownElement.className = 'crown';
@@ -348,19 +364,23 @@ function addCrownToCat(catElement, level) {
 function updateCatSelectionCrowns() {
     catOptions.forEach(option => {
         const catPreview = option.querySelector('.cat-preview');
+        const catType = option.dataset.catType;
+        
         // Remove existing crowns
         const existingCrown = catPreview.querySelector('.crown');
         if (existingCrown) {
             existingCrown.remove();
         }
         
-        // Find the highest crown for this cat type
+        // Find the highest crown for this specific cat type
+        const catCrowns = crownData[catType];
         let highestCrown = null;
-        if (crownData.gold.length > 0) {
+        
+        if (catCrowns.gold.length > 0) {
             highestCrown = '🥇';
-        } else if (crownData.silver.length > 0) {
+        } else if (catCrowns.silver.length > 0) {
             highestCrown = '🥈';
-        } else if (crownData.bronze.length > 0) {
+        } else if (catCrowns.bronze.length > 0) {
             highestCrown = '🥉';
         }
         
@@ -388,13 +408,15 @@ function updateGameoverCat() {
     tail.className = 'tail';
     gameoverCat.appendChild(tail);
     
-    // Add highest crown if any
+    // Add highest crown for the selected cat type only
+    const catCrowns = crownData[selectedCatType];
     let highestCrown = null;
-    if (crownData.gold.length > 0) {
+    
+    if (catCrowns.gold.length > 0) {
         highestCrown = '🥇';
-    } else if (crownData.silver.length > 0) {
+    } else if (catCrowns.silver.length > 0) {
         highestCrown = '🥈';
-    } else if (crownData.bronze.length > 0) {
+    } else if (catCrowns.bronze.length > 0) {
         highestCrown = '🥉';
     }
     
