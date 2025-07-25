@@ -448,6 +448,84 @@ body {
     }
 }
 
+/* Gameover screen cat */
+.gameover-cat {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 20px auto;
+    border-radius: 50%;
+    background-color: #D2691E;
+}
+
+.gameover-cat .tail {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: #D2691E;
+    border-radius: 50%;
+    right: -10px;
+    top: 20px;
+    z-index: -1;
+}
+
+/* Gameover cat types */
+.gameover-cat.cat-type-calico {
+    background: 
+        radial-gradient(circle at 10px 10px, #E89F65 20%, transparent 21%), 
+        radial-gradient(circle at 35px 30px, #555 15%, transparent 16%),   
+        radial-gradient(circle at 50px 15px, #FDFBF5 25%, transparent 26%),  
+        #E89F65;
+}
+
+.gameover-cat.cat-type-calico .tail {
+    background-color: #E89F65;
+}
+
+.gameover-cat.cat-type-black {
+    background-color: #333;
+}
+
+.gameover-cat.cat-type-black .tail {
+    background-color: #333;
+}
+
+.gameover-cat.cat-type-tabby-orange {
+    background: repeating-linear-gradient(
+        45deg,
+        #E89F65,
+        #E89F65 4px,
+        #D2691E 4px,
+        #D2691E 8px
+    );
+}
+
+.gameover-cat.cat-type-tabby-orange .tail {
+    background-color: #E89F65;
+}
+
+.gameover-cat.cat-type-white {
+    background-color: #FDFBF5;
+}
+
+.gameover-cat.cat-type-white .tail {
+    background-color: #FDFBF5;
+}
+
+.gameover-cat.cat-type-tabby-grey {
+    background: repeating-linear-gradient(
+        45deg,
+        #A9A9A9,
+        #A9A9A9 4px,
+        #808080 4px,
+        #808080 8px
+    );
+}
+
+.gameover-cat.cat-type-tabby-grey .tail {
+    background-color: #A9A9A9;
+}
+
 #pause-btn {
     background-color: #FFC107; /* Amber */
     box-shadow: 0 4px #DAA520; /* GoldenRod */

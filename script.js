@@ -31,6 +31,7 @@ let catY, catVelocity, obstacleX, score, obstacleSpeed;
 let obstacleHeight, obstacleY, obstacleType;
 let currentLevel = 1;
 let clearedLevels = [];
+let crownData = { bronze: [], silver: [], gold: [] };
 
 const gravity = -0.5;
 const jumpStrength = 12;
@@ -118,13 +119,11 @@ restartBtnGameover.addEventListener('touchstart', (e) => {
 
 backToTopBtn.addEventListener('click', () => {
     currentLevel = 1;
-    clearedLevels = [];
     resetGame(true);
 });
 backToTopBtn.addEventListener('touchstart', (e) => { 
     e.preventDefault(); 
     currentLevel = 1;
-    clearedLevels = [];
     resetGame(true); 
 });
 
@@ -137,6 +136,7 @@ catOptions.forEach(option => {
         option.classList.add('selected');
         selectedCatType = option.dataset.catType;
         applyCatType();
+        updateCatSelectionCrowns();
     });
     
     // タッチイベント（スマホ対応）
@@ -147,6 +147,7 @@ catOptions.forEach(option => {
         option.classList.add('selected');
         selectedCatType = option.dataset.catType;
         applyCatType();
+        updateCatSelectionCrowns();
     });
 });
 
@@ -186,6 +187,7 @@ function init() {
 
     applyCatType(); // Apply selected cat type on init
     updateCrownDisplay();
+    updateCatSelectionCrowns();
     setNewObstacle();
 }
 
@@ -234,6 +236,17 @@ function gameClear() {
     // Add current level to cleared levels if not already there
     if (!clearedLevels.includes(currentLevel)) {
         clearedLevels.push(currentLevel);
+        
+        // Award crown based on level
+        if (currentLevel === 1 && !crownData.bronze.includes(1)) {
+            crownData.bronze.push(1);
+        } else if (currentLevel === 2 && !crownData.silver.includes(2)) {
+            crownData.silver.push(2);
+        } else if (currentLevel >= 3 && !crownData.gold.includes(currentLevel)) {
+            crownData.gold.push(currentLevel);
+        }
+        
+        saveCrownData();
     }
     
     // Update clear screen message based on current level
@@ -259,6 +272,7 @@ function gameClear() {
 function gameOver() {
     gameState = 'gameover';
     clearInterval(gameLoopInterval);
+    updateGameoverCat();
     gameoverScreen.style.display = 'flex';
     gameControls.style.display = 'none';
 }
@@ -282,12 +296,114 @@ function updateCrownDisplay() {
     if (clearedLevels.includes(currentLevel)) {
         const crown = document.createElement('div');
         crown.className = 'crown';
-        crown.textContent = '👑';
+        
+        // Set crown type based on level
+        if (currentLevel === 1) {
+            crown.textContent = '🥉'; // Bronze
+        } else if (currentLevel === 2) {
+            crown.textContent = '🥈'; // Silver
+        } else {
+            crown.textContent = '🥇'; // Gold
+        }
+        
         cat.appendChild(crown);
     }
     
     // Update crown status display
-    crownStatusDisplay.textContent = `👑 × ${clearedLevels.length}`;
+    const totalCrowns = crownData.bronze.length + crownData.silver.length + crownData.gold.length;
+    crownStatusDisplay.textContent = `👑 × ${totalCrowns}`;
+}
+
+// --- Crown Data Management ---
+function saveCrownData() {
+    localStorage.setItem('nekojump_crowns', JSON.stringify(crownData));
+}
+
+function loadCrownData() {
+    const saved = localStorage.getItem('nekojump_crowns');
+    if (saved) {
+        crownData = JSON.parse(saved);
+        // Update clearedLevels based on crown data
+        clearedLevels = [...crownData.bronze, ...crownData.silver, ...crownData.gold];
+    }
+}
+
+function getCrownForLevel(level) {
+    if (crownData.bronze.includes(level)) return '🥉';
+    if (crownData.silver.includes(level)) return '🥈';
+    if (crownData.gold.includes(level)) return '🥇';
+    return null;
+}
+
+function addCrownToCat(catElement, level) {
+    const crown = getCrownForLevel(level);
+    if (crown) {
+        const crownElement = document.createElement('div');
+        crownElement.className = 'crown';
+        crownElement.textContent = crown;
+        catElement.appendChild(crownElement);
+    }
+}
+
+function updateCatSelectionCrowns() {
+    catOptions.forEach(option => {
+        const catPreview = option.querySelector('.cat-preview');
+        // Remove existing crowns
+        const existingCrown = catPreview.querySelector('.crown');
+        if (existingCrown) {
+            existingCrown.remove();
+        }
+        
+        // Find the highest crown for this cat type
+        let highestCrown = null;
+        if (crownData.gold.length > 0) {
+            highestCrown = '🥇';
+        } else if (crownData.silver.length > 0) {
+            highestCrown = '🥈';
+        } else if (crownData.bronze.length > 0) {
+            highestCrown = '🥉';
+        }
+        
+        if (highestCrown) {
+            const crownElement = document.createElement('div');
+            crownElement.className = 'crown';
+            crownElement.textContent = highestCrown;
+            catPreview.appendChild(crownElement);
+        }
+    });
+}
+
+function updateGameoverCat() {
+    const gameoverCat = document.getElementById('gameover-cat');
+    if (!gameoverCat) return;
+    
+    // Clear existing content
+    gameoverCat.innerHTML = '';
+    
+    // Apply current cat type
+    gameoverCat.className = 'gameover-cat cat-type-' + selectedCatType;
+    
+    // Add tail
+    const tail = document.createElement('span');
+    tail.className = 'tail';
+    gameoverCat.appendChild(tail);
+    
+    // Add highest crown if any
+    let highestCrown = null;
+    if (crownData.gold.length > 0) {
+        highestCrown = '🥇';
+    } else if (crownData.silver.length > 0) {
+        highestCrown = '🥈';
+    } else if (crownData.bronze.length > 0) {
+        highestCrown = '🥉';
+    }
+    
+    if (highestCrown) {
+        const crownElement = document.createElement('div');
+        crownElement.className = 'crown';
+        crownElement.textContent = highestCrown;
+        gameoverCat.appendChild(crownElement);
+    }
 }
 
 // --- Main Game Loop ---
@@ -365,4 +481,5 @@ function checkObstacleCollision() {
     );
 }
 
+loadCrownData();
 init();
