@@ -60,12 +60,19 @@ const levelSettings = {
 // --- Event Listeners ---
 function setupEventListeners() {
     console.log('Setting up event listeners');
+    console.log('startBtn element:', startBtn);
+    
+    if (!startBtn) {
+        console.error('Start button not found!');
+        return;
+    }
     
     document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); handleJump(); } });
     gameContainer.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(); });
     
     startBtn.addEventListener('click', () => {
         console.log('Start button clicked');
+        alert('スタートボタンがクリックされました！');
         startGame();
     });
     startBtn.addEventListener('touchstart', (e) => {
@@ -525,6 +532,22 @@ function checkObstacleCollision() {
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing game');
+    
+    // Check if all required elements exist
+    console.log('Elements check:');
+    console.log('startBtn:', document.getElementById('start-btn'));
+    console.log('gameContainer:', document.getElementById('game-container'));
+    console.log('startScreen:', document.getElementById('start-screen'));
+    
+    // Direct test for start button
+    const testBtn = document.getElementById('start-btn');
+    if (testBtn) {
+        console.log('Adding direct test listener to start button');
+        testBtn.onclick = function() {
+            alert('直接のクリックテスト成功！');
+        };
+    }
+    
     setupEventListeners();
     loadCrownData();
     init();
