@@ -20,6 +20,11 @@ const backToTopClearBtn = document.getElementById('back-to-top-clear-btn');
 const restartBtnGameover = document.getElementById('restart-btn-gameover');
 const backToTopBtn = document.getElementById('back-to-top-btn');
 
+// Debug: Check if elements are found
+console.log('startBtn:', startBtn);
+console.log('startScreen:', startScreen);
+console.log('gameControls:', gameControls);
+
 // Cat Selection
 const catSelection = document.getElementById('cat-selection');
 const catOptions = document.querySelectorAll('.cat-option');
@@ -55,7 +60,10 @@ const levelSettings = {
 // --- Event Listeners ---
 document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); handleJump(); } });
 gameContainer.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(); });
-startBtn.addEventListener('click', startGame);
+startBtn.addEventListener('click', () => {
+    console.log('Start button clicked');
+    startGame();
+});
 startBtn.addEventListener('touchstart', (e) => {
     e.preventDefault(); // デフォルトのタッチ動作を防ぐ
     console.log('Start button touched'); // デバッグ用
@@ -196,15 +204,21 @@ function init() {
 }
 
 function startGame() {
-    if (gameState !== 'waiting' && gameState !== 'gameover') return;
+    console.log('startGame called, gameState:', gameState);
+    if (gameState !== 'waiting' && gameState !== 'gameover') {
+        console.log('startGame blocked due to gameState');
+        return;
+    }
     resetGame(false);
     gameState = 'playing';
+    console.log('Setting game to playing state');
     startScreen.style.display = 'none';
     gameoverScreen.style.display = 'none';
     gameControls.style.display = 'flex';
     updateCrownDisplay();
     if (gameLoopInterval) clearInterval(gameLoopInterval);
     gameLoopInterval = setInterval(gameLoop, 20);
+    console.log('Game loop started');
 }
 
 function resetGame(showStartScreen) {

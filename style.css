@@ -280,8 +280,9 @@ body {
     align-items: center;
     text-align: center;
     z-index: 20;
-    padding-top: 20px;
+    padding: 15px 10px 20px 10px;
     overflow-y: auto;
+    box-sizing: border-box;
 }
 
 #clear-screen, #gameover-screen {
@@ -348,34 +349,35 @@ body {
 }
 
 #start-btn, #next-level-btn, #retry-level-btn, #back-to-top-clear-btn, #restart-btn-gameover, #back-to-top-btn {
-    padding: 12px 20px;
-    font-size: 16px;
+    padding: 10px 15px;
+    font-size: 14px;
     font-weight: bold;
     color: #fff;
     border: none;
-    border-radius: 25px;
+    border-radius: 20px;
     cursor: pointer;
-    box-shadow: 0 4px #555;
-    margin-top: 10px;
-    max-width: 280px;
-    width: 90%;
+    box-shadow: 0 3px #555;
+    margin: 8px auto;
+    max-width: 250px;
+    width: 85%;
+    display: block;
     -webkit-tap-highlight-color: transparent; /* iOS タップハイライトを無効化 */
     touch-action: manipulation; /* タッチ操作を最適化 */
 }
 
 #start-btn, #next-level-btn, #restart-btn-gameover {
     background-color: #1E90FF; /* DodgerBlue */
-    box-shadow: 0 4px #1C86EE;
+    box-shadow: 0 3px #1C86EE;
 }
 
 #retry-level-btn {
     background-color: #32CD32; /* LimeGreen */
-    box-shadow: 0 4px #228B22;
+    box-shadow: 0 3px #228B22;
 }
 
 #back-to-top-btn, #back-to-top-clear-btn {
     background-color: #6c757d; /* Gray */
-    box-shadow: 0 4px #5a6268;
+    box-shadow: 0 3px #5a6268;
 }
 
 /* キラキラアニメーション */
