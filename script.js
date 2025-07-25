@@ -72,7 +72,6 @@ function setupEventListeners() {
     
     startBtn.addEventListener('click', () => {
         console.log('Start button clicked');
-        alert('スタートボタンがクリックされました！');
         startGame();
     });
     startBtn.addEventListener('touchstart', (e) => {
@@ -325,9 +324,11 @@ function updateCrownDisplay() {
     
     // Add crown if current level has been cleared by current cat
     const catCrowns = crownData[selectedCatType];
-    const hasCurrentLevelCrown = catCrowns.bronze.includes(currentLevel) || 
-                                 catCrowns.silver.includes(currentLevel) || 
-                                 catCrowns.gold.includes(currentLevel);
+    if (!catCrowns) return;
+    
+    const hasCurrentLevelCrown = (catCrowns.bronze && catCrowns.bronze.includes(currentLevel)) || 
+                                 (catCrowns.silver && catCrowns.silver.includes(currentLevel)) || 
+                                 (catCrowns.gold && catCrowns.gold.includes(currentLevel));
     
     if (hasCurrentLevelCrown) {
         const crown = document.createElement('div');
@@ -346,7 +347,12 @@ function updateCrownDisplay() {
     }
     
     // Update crown status display for current cat
-    const totalCrowns = catCrowns.bronze.length + catCrowns.silver.length + catCrowns.gold.length;
+    let totalCrowns = 0;
+    if (catCrowns) {
+        totalCrowns = (catCrowns.bronze ? catCrowns.bronze.length : 0) + 
+                     (catCrowns.silver ? catCrowns.silver.length : 0) + 
+                     (catCrowns.gold ? catCrowns.gold.length : 0);
+    }
     crownStatusDisplay.textContent = `👑 × ${totalCrowns}`;
 }
 
@@ -358,22 +364,49 @@ function saveCrownData() {
 function loadCrownData() {
     const saved = localStorage.getItem('nekojump_crowns');
     if (saved) {
-        crownData = JSON.parse(saved);
-        // Update clearedLevels based on crown data for all cats
-        clearedLevels = [];
-        Object.values(crownData).forEach(catCrowns => {
-            clearedLevels.push(...catCrowns.bronze, ...catCrowns.silver, ...catCrowns.gold);
-        });
-        // Remove duplicates
-        clearedLevels = [...new Set(clearedLevels)];
+        try {
+            const savedData = JSON.parse(saved);
+            // Merge saved data with default structure
+            Object.keys(crownData).forEach(catType => {
+                if (savedData[catType]) {
+                    crownData[catType] = {
+                        bronze: savedData[catType].bronze || [],
+                        silver: savedData[catType].silver || [],
+                        gold: savedData[catType].gold || []
+                    };
+                }
+            });
+            
+            // Update clearedLevels based on crown data for all cats
+            clearedLevels = [];
+            Object.values(crownData).forEach(catCrowns => {
+                if (catCrowns && catCrowns.bronze && catCrowns.silver && catCrowns.gold) {
+                    clearedLevels.push(...catCrowns.bronze, ...catCrowns.silver, ...catCrowns.gold);
+                }
+            });
+            // Remove duplicates
+            clearedLevels = [...new Set(clearedLevels)];
+        } catch (error) {
+            console.error('Error loading crown data:', error);
+            // Reset to default if error occurs
+            crownData = {
+                calico: { bronze: [], silver: [], gold: [] },
+                black: { bronze: [], silver: [], gold: [] },
+                'tabby-orange': { bronze: [], silver: [], gold: [] },
+                white: { bronze: [], silver: [], gold: [] },
+                'tabby-grey': { bronze: [], silver: [], gold: [] }
+            };
+        }
     }
 }
 
 function getCrownForLevel(level, catType) {
     const catCrowns = crownData[catType];
-    if (catCrowns.bronze.includes(level)) return '🥉';
-    if (catCrowns.silver.includes(level)) return '🥈';
-    if (catCrowns.gold.includes(level)) return '🥇';
+    if (!catCrowns) return null;
+    
+    if (catCrowns.bronze && catCrowns.bronze.includes(level)) return '🥉';
+    if (catCrowns.silver && catCrowns.silver.includes(level)) return '🥈';
+    if (catCrowns.gold && catCrowns.gold.includes(level)) return '🥇';
     return null;
 }
 
@@ -402,11 +435,11 @@ function updateCatSelectionCrowns() {
         const catCrowns = crownData[catType];
         let highestCrown = null;
         
-        if (catCrowns.gold.length > 0) {
+        if (catCrowns && catCrowns.gold && catCrowns.gold.length > 0) {
             highestCrown = '🥇';
-        } else if (catCrowns.silver.length > 0) {
+        } else if (catCrowns && catCrowns.silver && catCrowns.silver.length > 0) {
             highestCrown = '🥈';
-        } else if (catCrowns.bronze.length > 0) {
+        } else if (catCrowns && catCrowns.bronze && catCrowns.bronze.length > 0) {
             highestCrown = '🥉';
         }
         
@@ -438,11 +471,11 @@ function updateGameoverCat() {
     const catCrowns = crownData[selectedCatType];
     let highestCrown = null;
     
-    if (catCrowns.gold.length > 0) {
+    if (catCrowns && catCrowns.gold && catCrowns.gold.length > 0) {
         highestCrown = '🥇';
-    } else if (catCrowns.silver.length > 0) {
+    } else if (catCrowns && catCrowns.silver && catCrowns.silver.length > 0) {
         highestCrown = '🥈';
-    } else if (catCrowns.bronze.length > 0) {
+    } else if (catCrowns && catCrowns.bronze && catCrowns.bronze.length > 0) {
         highestCrown = '🥉';
     }
     
@@ -539,14 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('gameContainer:', document.getElementById('game-container'));
     console.log('startScreen:', document.getElementById('start-screen'));
     
-    // Direct test for start button
-    const testBtn = document.getElementById('start-btn');
-    if (testBtn) {
-        console.log('Adding direct test listener to start button');
-        testBtn.onclick = function() {
-            alert('直接のクリックテスト成功！');
-        };
-    }
+    // Direct test removed - functionality restored
     
     setupEventListeners();
     loadCrownData();
